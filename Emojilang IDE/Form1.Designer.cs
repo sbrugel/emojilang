@@ -56,6 +56,7 @@ namespace Emojilang_IDE
             // 
             // textBox2
             // 
+            this.textBox2.BackColor = System.Drawing.Color.White;
             this.textBox2.Location = new System.Drawing.Point(13, 474);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -7,8 +8,14 @@ namespace Emojilang_IDE
 {
     public partial class Form1 : Form
     {
+        string pythonDirectory = "";
         public Form1()
         {
+            if (pythonDirectory == "")
+            {
+                MessageBox.Show("Please go into the code and copy your python.exe directory into the \'pythonDirectory\' variable. An improved way of getting this path will be implemented later.");
+                return;
+            }
             InitializeComponent();
         }
 
@@ -19,7 +26,7 @@ namespace Emojilang_IDE
             saveFile.Title = "Save File";
             DialogResult result = saveFile.ShowDialog();
 
-            string code = replaceText();
+            string code = ReplaceText();
             if (result == DialogResult.OK)
             {
                 File.WriteAllText(saveFile.FileName, code);
@@ -30,7 +37,7 @@ namespace Emojilang_IDE
             string fileName = saveFile.FileName + ".py";
 
             Process p = new Process();
-            p.StartInfo = new ProcessStartInfo("C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe", fileName)
+            p.StartInfo = new ProcessStartInfo(pythonDirectory, fileName)
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -46,16 +53,34 @@ namespace Emojilang_IDE
 
             if (output == "")
             {
-                textBox2.Text = error;
+                textBox2.BackColor = Color.PaleVioletRed;
+
+                string betterError = error;
+
+                betterError = betterError.Replace("def", "🏁");
+                betterError = betterError.Replace("print", "🖨");
+                betterError = betterError.Replace("if", "🤔");
+                betterError = betterError.Replace("elif", "😕");
+                betterError = betterError.Replace("else", "😔");
+                betterError = betterError.Replace("=", "✔");
+                betterError = betterError.Replace("not", "❌");
+                betterError = betterError.Replace("return", "↩");
+                betterError = betterError.Replace("True", "🙂");
+                betterError = betterError.Replace("False", "😢");
+                betterError = betterError.Replace(">", "▶");
+                betterError = betterError.Replace("<", "◀");
+
+                textBox2.Text = betterError;
             } else
             {
+                textBox2.BackColor = Color.White;
                 textBox2.Text = output;
             }
 
             File.Delete(fileName);
         }
 
-        public string replaceText()
+        public string ReplaceText()
         {
             string code = textBox1.Text;
 
