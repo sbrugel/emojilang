@@ -10,9 +10,6 @@ Technically, you can execute pure python from this program, but that's not the m
 
 **TIP:** You can use (Windows Key)+: to open an emoji menu. Type in the name of an emoji and click on one on the menu to append it to your cursor.
 
-## Notes
-You'll need to provide your python.exe path in the program currently, under the 'pythonDirectory' variable, for the program to work. (e.g. mine is C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\Python37_64\\python.exe) I plan on implementing a better way of getting the user's python directory at a later point.
-
 ## Key
 🏁 = 'def'
 
@@ -48,12 +45,14 @@ The clock emojis are used for numbers from 1 to 9, with 12 o'clock representing 
 ![Emojilang_IDE_STWQh6lZks](https://user-images.githubusercontent.com/58154576/170095959-06a37655-c3db-46f0-b2b4-f200942289c0.png)
 
 ## To do
-- [ ] better way of getting user's python.exe path
-- [ ] later load in emojilang files, instantly execute if already saved
+- [X] better way of getting user's python.exe path
+- [ ] may want to improve that a bit more using registry, but that's dependent on version...
+
+- [ ] later load in emojilang files, ~~instantly execute if already saved~~
 - [ ] on-screen emoji keyboard?
 - [ ] favicon when i'm not lazy
 
-## Issues
+## Known Issues
 - 'input()' doesn't work, will cause the program to hang. Probably won't be fixed
 - Save As prompt always appears. To be fixed in #1 of the To Do list.
 

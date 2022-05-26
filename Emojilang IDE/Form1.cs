@@ -1,22 +1,47 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Emojilang_IDE
 {
     public partial class Form1 : Form
     {
-        string pythonDirectory = "";
-        public Form1()
+        readonly string APPDATA_FOLDER = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\Emojilang";
+        string pythonDirectory, currentFile = "";
+        public Form1(string openedFile = "")
         {
-            if (pythonDirectory == "")
+            if (!openedFile.Equals("")) // opening another file
             {
-                MessageBox.Show("Please go into the code and copy your python.exe directory into the \'pythonDirectory\' variable. An improved way of getting this path will be implemented later.");
-                return;
+
+            } else // opening initially
+            {
+                if (!Directory.Exists(APPDATA_FOLDER))
+                {
+                    Directory.CreateDirectory(APPDATA_FOLDER);
+                }
+                if (!File.Exists(APPDATA_FOLDER + "\\python.txt"))
+                {
+                    string name = Interaction.InputBox("Enter the full path of the location of your Python executable. You can find this by running \'print(sys.executable)\' in a Python shell.");
+                    File.WriteAllText(Path.Combine(APPDATA_FOLDER, "python.txt"), name);
+                    pythonDirectory = name;
+                    InitializeComponent();
+                }
+                else
+                {
+                    pythonDirectory = File.ReadLines(Path.Combine(APPDATA_FOLDER, "python.txt")).ElementAtOrDefault(0); // first line
+                    InitializeComponent();
+                }
+
+                if (!currentFile.Equals(""))
+                {
+                    Text = "IntelliEmoji - " + currentFile;
+                }
             }
-            InitializeComponent();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -24,17 +49,27 @@ namespace Emojilang_IDE
             SaveFileDialog saveFile = new SaveFileDialog();
             saveFile.Filter = "Emojilang File|*.emoji";
             saveFile.Title = "Save File";
-            DialogResult result = saveFile.ShowDialog();
 
             string code = ReplaceText();
-            if (result == DialogResult.OK)
+
+            if (currentFile.Equals(""))
             {
-                File.WriteAllText(saveFile.FileName, code);
+                DialogResult result = saveFile.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    currentFile = saveFile.FileName;
+                    Text = "IntelliEmoji - " + currentFile;
+                } else
+                {
+                    return;
+                }
             }
 
-            File.WriteAllText(saveFile.FileName + ".py", code);
+            File.WriteAllText(currentFile, code);
 
-            string fileName = saveFile.FileName + ".py";
+            File.WriteAllText(currentFile + ".py", code);
+
+            string fileName = currentFile + ".py";
 
             Process p = new Process();
             p.StartInfo = new ProcessStartInfo(pythonDirectory, fileName)
@@ -78,6 +113,11 @@ namespace Emojilang_IDE
             }
 
             File.Delete(fileName);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            new Form1().Show();
         }
 
         public string ReplaceText()
